@@ -23,15 +23,14 @@ app.get("/", (req, res) => {
   res.sendFile(pathToFile);
 });
 
-app.get('/runs', async (req, res) => {
+app.get("/runs", async (req, res) => {
   try {
-  const queryResponse = await client.query("SELECT * FROM runs")
-  res.status(200).json(queryResponse.rows);
+    const queryResponse = await client.query("SELECT * FROM runs");
+    res.status(200).json(queryResponse.rows);
+  } catch (error) {
+    res.status(404).json("Error making a query to database");
   }
-  catch (error) {
-    res.status(404).json("Error making a query to database")
-  }
-})
+});
 
 //starting the server
 app.listen(PORT_NUMBER, () => {
