@@ -17,11 +17,13 @@ const PORT_NUMBER = process.env.PORT ?? 4000;
 const client = new Client(process.env.DATABASE_URL);
 client.connect();
 
+//landing on the front page of the REST API
 app.get("/", (req, res) => {
   const pathToFile = filePath("../public/index.html");
   res.sendFile(pathToFile);
 });
 
+//starting the server
 app.listen(PORT_NUMBER, () => {
   console.log(`Server is listneing on port ${PORT_NUMBER}!`);
 });
