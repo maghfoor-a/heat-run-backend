@@ -23,7 +23,6 @@ app.get("/", (req, res) => {
   res.sendFile(pathToFile);
 });
 
-
 //getting all the runs
 app.get("/runs", async (req, res) => {
   try {
@@ -36,20 +35,28 @@ app.get("/runs", async (req, res) => {
 
 //posting a run
 app.post("/runs", async (req, res) => {
-  console.log(req.body)
-  const values = [req.body.date, req.body.distance, req.body.hours, req.body.minutes, req.body.seconds]
+  console.log(req.body);
+  const values = [
+    req.body.date,
+    req.body.distance,
+    req.body.hours,
+    req.body.minutes,
+    req.body.seconds,
+  ];
   try {
-    const queryResponse = await client.query(`
+    const queryResponse = await client.query(
+      `
     INSERT INTO runs (run_date, distance, hours, minutes, seconds)
     VALUES ($1, $2, $3, $4, $5)
     RETURNING *
-    `, values)
-    res.status(200).json(queryResponse.rows)
+    `,
+      values
+    );
+    res.status(200).json(queryResponse.rows);
+  } catch (error) {
+    res.status(400).json("internal error, failed to post data to database");
   }
-  catch (error) {
-    res.status(400).json("internal error, failed to post data to database")
-  }
-})
+});
 
 //starting the server
 app.listen(PORT_NUMBER, () => {
