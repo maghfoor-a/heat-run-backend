@@ -58,6 +58,16 @@ app.post("/runs", async (req, res) => {
   }
 });
 
+//deleting all runs
+app.delete("/runs", async (req, res) => {
+  try {
+    const queryResponse = await client.query("TRUNCATE TABLE runs");
+    res.status(200).json("All runs data deleted!");
+  } catch (error) {
+    res.status(404).json("Internal error, failed to make query");
+  }
+});
+
 //starting the server
 app.listen(PORT_NUMBER, () => {
   console.log(`Server is listneing on port ${PORT_NUMBER}!`);
