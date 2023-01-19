@@ -35,7 +35,6 @@ app.get("/runs", async (req, res) => {
 
 //posting a run
 app.post("/runs", async (req, res) => {
-  console.log(req.body);
   const values = [
     req.body.date,
     req.body.distance,
@@ -61,12 +60,26 @@ app.post("/runs", async (req, res) => {
 //deleting all runs
 app.delete("/runs", async (req, res) => {
   try {
-    const queryResponse = await client.query("TRUNCATE TABLE runs");
+    await client.query("TRUNCATE TABLE runs");
     res.status(200).json("All runs data deleted!");
   } catch (error) {
     res.status(404).json("Internal error, failed to make query");
   }
 });
+
+//deleting a run on a specific date
+app.delete("/runs/:date", async (req, res) => {
+  const timestamp = Date.parse(req.params.date)
+  const date = new Date(timestamp)
+  const formattedDate = date.toISOString().slice(0, 10);
+  try {
+    const queryResponse = await client.query('DELETE FROM runs WHERE run_date = $1', [formattedDate])
+    res.status(200).json(queryResponse.rows)
+  }
+  catch (error) {
+    res.status(400).json("Failed to delete data from database")
+  }
+})
 
 //starting the server
 app.listen(PORT_NUMBER, () => {
